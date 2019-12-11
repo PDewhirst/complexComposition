@@ -1,0 +1,20 @@
+language: generic 
+sudo: required
+services:
+    - docker
+    
+before_install:
+    - docker build -t peterdbitc/complexComposition -f ./client/Dockerfile.dev ./client
+    
+script:
+    - docker run -e CI=true peterdbitc/complexComposition npm run test
+  
+after_success:
+    - docker build -t peterdbitc/complexComposition ./client
+    - docker build -t peterdbitc/complexComposition ./nginx
+    - docker build -t peterdbitc/complexComposition ./server
+    - docker build -t peterdbitc/complexComposition ./worker
+    
+    #to move these things to docker hub, you'll need to provide a docker login so it knows where to send it.
+    
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
