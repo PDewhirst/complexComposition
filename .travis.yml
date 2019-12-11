@@ -4,17 +4,22 @@ services:
     - docker
     
 before_install:
-    - docker build -t peterdbitc/complexComposition -f ./client/Dockerfile.dev ./client
+    - docker build -t peterdbitc/complex-composition -f ./client/Dockerfile.dev ./client
     
 script:
-    - docker run -e CI=true peterdbitc/complexComposition npm run test
+    - docker run -e CI=true peterdbitc/complex-composition npm run test
   
 after_success:
-    - docker build -t peterdbitc/complexComposition ./client
-    - docker build -t peterdbitc/complexComposition ./nginx
-    - docker build -t peterdbitc/complexComposition ./server
-    - docker build -t peterdbitc/complexComposition ./worker
+    - docker build -t peterdbitc/complex-client ./client
+    - docker build -t peterdbitc/complex-nginx ./nginx
+    - docker build -t peterdbitc/complex-server ./server
+    - docker build -t peterdbitc/complex-worker ./worker
     
     #to move these things to docker hub, you'll need to provide a docker login so it knows where to send it.
     
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    
+    - docker push peterdbitc/complex-client
+    - docker push peterdbitc/complex-nginx
+    - docker push peterdbitc/complex-server
+    - docker push peterdbitc/complex-worker
